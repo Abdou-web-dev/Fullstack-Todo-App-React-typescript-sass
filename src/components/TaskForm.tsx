@@ -1,13 +1,14 @@
 import { useFormik } from "formik";
 import { CSSProperties, FunctionComponent, useEffect } from "react";
 import DatePicker from "react-date-picker";
+import { useNavigate } from "react-router-dom";
 import Select, {
   CSSObjectWithLabel,
   GroupBase,
   StylesConfig,
 } from "react-select";
 import { Task } from "../types/taskType";
-import { validationSchema } from "../utils/validationSchema";
+import { validationSchema as taskValidationSchema } from "../utils/validationSchema";
 
 interface TaskFormProps {
   onSubmit: (newTask: Task) => void;
@@ -20,28 +21,22 @@ const taskTypes = [
 ];
 
 export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
-  // useEffect(() => {
-  //   onSubmit({
-  //     name: "aa",
-  //     description: "lejfljef",
-  //     createdAt: new Date(),
-  //     isDone: false,
-  //     isValidated: true,
-  //   });
-  // }, []);
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
       type: "",
-      createdAt: new Date(),
+      createdAt: "",
       isDone: false,
       isValidated: false,
     },
-    validationSchema,
+    validationSchema: taskValidationSchema,
     onSubmit: (values) => {
       onSubmit(values);
       formik.resetForm();
+      navigate("/tasks"); // Redirect to the tasks page
     },
   });
 
@@ -58,8 +53,15 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
   };
 
   const handleDateChange = (date: any) => {
-    formik.setFieldValue("createdAt", date);
-    formik.setFieldTouched("createdAt", true, false); // Mark the field as touched
+    // Check if the date is valid before setting the value
+    if (date) {
+      formik.setFieldValue("createdAt", date);
+    } else {
+      formik.setFieldValue("createdAt", null);
+    }
+
+    formik.setFieldTouched("createdAt", true); // Mark the field as touched
+    // console.log("handleDateChange called");
   };
 
   // useEffect to handle closing the calendar when a date is selected or a click event occurs outside the calendar
@@ -166,7 +168,9 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
           value={formik.values.name}
         />
         {formik.touched.name && formik.errors.name ? (
-          <div>{formik.errors.name}</div>
+          <div className="" style={{ color: "red" }}>
+            {formik.errors.name}
+          </div>
         ) : null}
       </div>
       <div>
@@ -180,6 +184,9 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
           }}
           value={formik.values.description}
         />
+        {formik.touched.description && formik.errors.description ? (
+          <div className="">{formik.errors.description}</div>
+        ) : null}
       </div>
       <div>
         <label htmlFor="taskType">Type de tâche</label>
@@ -210,11 +217,14 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
           onChange={handleDateChange}
           shouldCloseCalendar={({ reason }) => reason === "escape"}
         />
+        {formik.touched.createdAt && formik.errors.createdAt ? (
+          <div className="error-message">{String(formik.errors.createdAt)}</div>
+        ) : null}
       </div>
       <button type="submit">Ajouter</button>
 
       {/* <div>{formik.values.createdAt.toDateString()}</div> */}
-      <div>{formik.values.type}</div>
+      {/* <div>{formik.values.type}</div> */}
     </form>
   );
 };

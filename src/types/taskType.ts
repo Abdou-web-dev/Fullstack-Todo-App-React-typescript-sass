@@ -1,7 +1,16 @@
 export interface Task {
   name: string;
   description: string;
-  createdAt: Date;
+  createdAt: Date | string;
   isDone: boolean;
   isValidated: boolean;
 }
+
+//   onSubmit({
+//     name: "aa",
+//     description: "lejfljef",
+//     createdAt: new Date(),
+//     isDone: false,
+//     isValidated: true,
+//   });
+// }, []);
