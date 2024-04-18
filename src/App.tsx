@@ -9,11 +9,7 @@ const App = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const handleSubmit = (newTask: Task) => {
-    // Ajouter la nouvelle tâche à la liste des tâches
-    console.log("handleSubmit from parent component called");
-    // setTasks([...tasks, newTask]);
     setTasks((prevTasks) => [...prevTasks, newTask]);
-
     // Save tasks to local storage
     localStorage.setItem("tasks", JSON.stringify([...tasks, newTask]));
   };

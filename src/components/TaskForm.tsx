@@ -29,6 +29,7 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
       description: "",
       type: "",
       createdAt: "",
+      createdAtTime: "",
       isDone: false,
       isValidated: false,
     },
@@ -37,6 +38,17 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
       onSubmit(values);
       formik.resetForm();
       navigate("/tasks"); // Redirect to the tasks page
+    },
+    validate: (values) => {
+      const errors = {};
+
+      // Validate createdAtTime
+      if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(values.createdAtTime)) {
+        // @ts-ignore
+        errors.createdAtTime = "Invalid time format";
+      }
+
+      return errors;
     },
   });
 
@@ -208,7 +220,7 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
           <div>{formik.errors.type}</div>
         ) : null}
       </div>
-      <div style={{ marginLeft: "2rem" }}>
+      <div>
         <label htmlFor="taskDate">Date :</label>
 
         <DatePicker
@@ -221,6 +233,41 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
           <div className="error-message">{String(formik.errors.createdAt)}</div>
         ) : null}
       </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="createdAtTime"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Time
+        </label>
+        <div className="mt-1">
+          <input
+            id="createdAtTime"
+            name="createdAtTime"
+            type="text"
+            className="mt-1 p-2 border rounded-md"
+            value={formik.values.createdAtTime}
+            // onChange={formik.handleChange}
+            onChange={(e) => {
+              let value = e.target.value;
+              // Automatically insert colon after two numbers
+              if (value.length === 2 && !value.includes(":")) {
+                value += ":";
+              }
+              formik.setFieldValue("createdAtTime", value);
+            }}
+            onBlur={formik.handleBlur} // Using formik.handleChange and formik.handleBlur is a shorthand way to manage the form's state and touch state automatically .
+            placeholder="HH:MM"
+          />
+        </div>
+        {formik.touched.createdAtTime && formik.errors.createdAtTime ? (
+          <div className="text-red-500 text-sm mt-1">
+            {formik.errors.createdAtTime}
+          </div>
+        ) : null}
+      </div>
+
       <button type="submit">Ajouter</button>
 
       {/* <div>{formik.values.createdAt.toDateString()}</div> */}

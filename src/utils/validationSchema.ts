@@ -5,4 +5,5 @@ export const validationSchema = Yup.object({
   description: Yup.string().required("Description de la tâche requise"),
   type: Yup.string().required("Type de tâche requis"),
   createdAt: Yup.date().nullable().required("Date est requise"),
+  createdAtTime: Yup.string().required("Time is required"),
 });
