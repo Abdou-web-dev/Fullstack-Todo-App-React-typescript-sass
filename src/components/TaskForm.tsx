@@ -32,6 +32,7 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
       createdAtTime: "",
       isDone: false,
       isValidated: false,
+      ongoing: true,
     },
     validationSchema: taskValidationSchema,
     onSubmit: (values) => {
