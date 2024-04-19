@@ -172,7 +172,7 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
         <label htmlFor="taskName">Nom de la tâche</label>
         <input
           id="taskName"
-          name="taskName"
+          name="name"
           type="text"
           onChange={(e) => {
             formik.handleChange(e);
@@ -190,7 +190,7 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
         <label htmlFor="taskDescription">Description de la tâche</label>
         <textarea
           id="taskDescription"
-          name="taskDescription"
+          name="description" //The name attribute should match the field name in formik initialValues.
           onChange={(e) => {
             formik.handleChange(e);
             formik.setFieldValue("description", e.target.value);

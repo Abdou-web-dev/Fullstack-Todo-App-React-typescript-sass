@@ -20,11 +20,6 @@
       background: rgba(23, 22, 22, 0.44);
     }
   }
-
-  &.is_done {
-    --tw-bg-opacity: 0.35;
-    background-color: rgb(236 253 245 / var(--tw-bg-opacity));
-  }
 }
 
 .sedan-regular {
@@ -38,4 +33,19 @@
   font-family: "Sedan", serif;
   font-weight: 400;
   font-style: italic;
+}
+.tooltip {
+  visibility: hidden;
+  width: 250px;
+  margin-bottom: 2px;
+  &.show_valid_tooltip {
+    width: 80px;
+  }
+  &.show_done_tooltip {
+    width: 100px;
+  }
+}
+
+.relative:hover .tooltip {
+  visibility: visible;
 }
