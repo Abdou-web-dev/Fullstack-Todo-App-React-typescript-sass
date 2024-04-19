@@ -39,7 +39,6 @@ const App = () => {
     });
     // Update the state with the updatedTasks
     setTasks(updatedTasks || []);
-    console.log(taskName, newStatus, "newStatus");
     return newStatus;
   };
 

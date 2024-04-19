@@ -24,6 +24,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
   const [borderWidth, setBorderWidth] = useState<string>(""); // Default border width
   const [cardLabel, setCardLabel] = useState("ongoing...");
   const [unvalidateTooltip, setUnvalidateTooltip] = useState(false);
+  const [importTaskTool, setImportTaskTool] = useState(false);
   // Function to get the correct icon based on task type
   const getIcon = () => {
     switch (task.type) {
@@ -74,11 +75,32 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
       }}
     >
       {getIcon() && (
-        <img
-          src={getIcon()}
-          alt={task.type}
-          className="absolute top-2 right-2 w-6 h-6"
-        />
+        <div className="relative group">
+          <img
+            src={getIcon()}
+            alt={task.type}
+            className="absolute top-2 right-2 w-6 h-6"
+            onMouseOver={() => {
+              setImportTaskTool(true);
+              setTimeout(() => {
+                setImportTaskTool(false);
+              }, 2000);
+            }}
+          />
+          <Tooltip
+            {...{ importTaskTool }}
+            show={importTaskTool}
+            content={
+              task.type === "important"
+                ? "this task needs attention !"
+                : task.type === "personal"
+                ? "this is a Personal task !"
+                : task.type === "professional"
+                ? "this is a Professional task !"
+                : ""
+            }
+          />
+        </div>
       )}
       <h2 className="text-xl font-semibold mb-2">{task.name}</h2>
 

@@ -38,11 +38,21 @@
   visibility: hidden;
   width: 250px;
   margin-bottom: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    text-align: center;
+  }
   &.show_valid_tooltip {
     width: 80px;
   }
   &.show_done_tooltip {
     width: 100px;
+  }
+  &.show_importTaskTool {
+    width: 180px;
+    background-color: grey;
   }
 }
 
