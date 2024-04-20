@@ -7,6 +7,7 @@ import Select, {
   GroupBase,
   StylesConfig,
 } from "react-select";
+import todo_app from "../assets/img/to-do-list.png";
 import { Task } from "../types/taskType";
 import { validationSchema as taskValidationSchema } from "../utils/validationSchema";
 
@@ -167,112 +168,154 @@ export const TaskForm: FunctionComponent<TaskFormProps> = ({ onSubmit }) => {
   }, []);
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <div>
-        <label htmlFor="taskName">Nom de la tâche</label>
-        <input
-          id="taskName"
-          name="name"
-          type="text"
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.setFieldValue("name", e.target.value);
-          }}
-          value={formik.values.name}
-        />
-        {formik.touched.name && formik.errors.name ? (
-          <div className="" style={{ color: "red" }}>
-            {formik.errors.name}
-          </div>
-        ) : null}
+    <div className="grid grid-cols-1 gap-6 max-w-screen-xl mx-auto xl:grid-cols-2 lg:w-4/5">
+      <div className="h-screen">
+        <img className="object-center w-full h-2/3" src={todo_app} alt="" />
       </div>
-      <div>
-        <label htmlFor="taskDescription">Description de la tâche</label>
-        <textarea
-          id="taskDescription"
-          name="description" //The name attribute should match the field name in formik initialValues.
-          onChange={(e) => {
-            formik.handleChange(e);
-            formik.setFieldValue("description", e.target.value);
-          }}
-          value={formik.values.description}
-        />
-        {formik.touched.description && formik.errors.description ? (
-          <div className="">{formik.errors.description}</div>
-        ) : null}
-      </div>
-      <div>
-        <label htmlFor="taskType">Type de tâche</label>
-        <Select
-          id="type"
-          name="type"
-          options={taskTypes}
-          styles={customStyles}
-          onChange={(selected) => {
-            if (selected) {
-              formik.setFieldValue("type", selected.value);
-            }
-          }}
-          value={taskTypes?.find(
-            (option) => option.value === formik.values.type
-          )}
-        />
-        {formik.touched.type && formik.errors.type ? (
-          <div>{formik.errors.type}</div>
-        ) : null}
-      </div>
-      <div>
-        <label htmlFor="taskDate">Date :</label>
-
-        <DatePicker
-          name="createdAt"
-          value={formik.values.createdAt}
-          onChange={handleDateChange}
-          shouldCloseCalendar={({ reason }) => reason === "escape"}
-        />
-        {formik.touched.createdAt && formik.errors.createdAt ? (
-          <div className="error-message">{String(formik.errors.createdAt)}</div>
-        ) : null}
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="createdAtTime"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Time
-        </label>
-        <div className="mt-1">
+      {/* the form will stretch across the full width of the container on smaller screens and align side-by-side with the image on larger screens. */}
+      {/* xl:w-full to ensure it takes up the full width of the container when the screen width is under 1280px (xl breakpoint). */}
+      <form
+        className="add_task__form  xl:w-full"
+        onSubmit={formik.handleSubmit}
+      >
+        <div className="mb-4">
+          <label
+            htmlFor="taskName"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Nom de la tâche
+          </label>
           <input
-            id="createdAtTime"
-            name="createdAtTime"
+            id="taskName"
+            name="name"
             type="text"
-            className="mt-1 p-2 border rounded-md"
-            value={formik.values.createdAtTime}
-            // onChange={formik.handleChange}
             onChange={(e) => {
-              let value = e.target.value;
-              // Automatically insert colon after two numbers
-              if (value.length === 2 && !value.includes(":")) {
-                value += ":";
-              }
-              formik.setFieldValue("createdAtTime", value);
+              formik.handleChange(e);
+              formik.setFieldValue("name", e.target.value);
             }}
-            onBlur={formik.handleBlur} // Using formik.handleChange and formik.handleBlur is a shorthand way to manage the form's state and touch state automatically .
-            placeholder="HH:MM"
+            value={formik.values.name}
+            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
           />
+          {formik.touched.name && formik.errors.name ? (
+            <div className="text-red-500 text-xs mt-1 mb-6">
+              {formik.errors.name}
+            </div>
+          ) : null}
         </div>
-        {formik.touched.createdAtTime && formik.errors.createdAtTime ? (
-          <div className="text-red-500 text-sm mt-1">
-            {formik.errors.createdAtTime}
+        <div>
+          <label
+            className="block text-sm font-medium text-gray-700"
+            htmlFor="taskDescription"
+          >
+            Description de la tâche
+          </label>
+          <textarea
+            id="taskDescription"
+            name="description" //The name attribute should match the field name in formik initialValues.
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldValue("description", e.target.value);
+            }}
+            value={formik.values.description}
+            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
+          />
+          {formik.touched.description && formik.errors.description ? (
+            <div className="text-red-500 text-xs mt-1 mb-6">
+              {formik.errors.description}
+            </div>
+          ) : null}
+        </div>
+        <div>
+          <label
+            htmlFor="taskType"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Type de tâche
+          </label>
+          <Select
+            id="type"
+            name="type"
+            options={taskTypes}
+            styles={customStyles}
+            onChange={(selected) => {
+              if (selected) {
+                formik.setFieldValue("type", selected.value);
+              }
+            }}
+            value={taskTypes?.find(
+              (option) => option.value === formik.values.type
+            )}
+            className="mt-1 w-full"
+          />
+          {formik.touched.type && formik.errors.type ? (
+            <div className="text-red-500 text-xs mt-1 mb-6">
+              {formik.errors.type}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="taskDate"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Date :
+          </label>
+
+          <DatePicker
+            name="createdAt"
+            value={formik.values.createdAt}
+            onChange={handleDateChange}
+            shouldCloseCalendar={({ reason }) => reason === "escape"}
+            className="mt-1 w-full "
+          />
+          {formik.touched.createdAt && formik.errors.createdAt ? (
+            <div className="text-red-500 text-xs mt-1 mb-6">
+              {String(formik.errors.createdAt)}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="createdAtTime"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Time
+          </label>
+          <div className="mt-1">
+            <input
+              id="createdAtTime"
+              name="createdAtTime"
+              type="text"
+              className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
+              value={formik.values.createdAtTime}
+              onChange={(e) => {
+                let value = e.target.value;
+                // Automatically insert colon after two numbers
+                if (value.length === 2 && !value.includes(":")) {
+                  value += ":";
+                }
+                formik.setFieldValue("createdAtTime", value);
+              }}
+              onBlur={formik.handleBlur} // Using formik.handleChange and formik.handleBlur is a shorthand way to manage the form's state and touch state automatically .
+              placeholder="HH:MM"
+            />
           </div>
-        ) : null}
-      </div>
+          {formik.touched.createdAtTime && formik.errors.createdAtTime ? (
+            <div className="text-red-500 text-xs mt-1 mb-6">
+              {formik.errors.createdAtTime}
+            </div>
+          ) : null}
+        </div>
 
-      <button type="submit">Ajouter</button>
-
-      {/* <div>{formik.values.createdAt.toDateString()}</div> */}
-      {/* <div>{formik.values.type}</div> */}
-    </form>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded-md"
+        >
+          Ajouter
+        </button>
+      </form>
+    </div>
   );
 };

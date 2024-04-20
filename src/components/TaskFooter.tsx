@@ -7,22 +7,60 @@ import { TasksContext } from "../context/ItemsContext";
 import { Task } from "../types/taskType";
 import { TaskSchema } from "../utils/validationSchema";
 import TaskIconWithTooltip from "./TaskIconWithTooltip";
+import Tooltip from "./Tooltip";
+import ExpandableInput from "./inputs/ExpandableInput";
 import TaskModal from "./modals/TaskModal";
 
 interface TaskFooterProps {
   task: Task;
   cardLabel: string;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSubTasksExpanded: boolean;
+  setIsSubTasksExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  setNumSets: React.Dispatch<React.SetStateAction<number>>;
+  numSets: number;
 }
 
 const TaskFooter: FunctionComponent<TaskFooterProps> = ({
   task: currentTask,
   cardLabel,
   setIsOpen,
+  isSubTasksExpanded,
+  setIsSubTasksExpanded,
+  setNumSets,
+  numSets,
 }) => {
   const { setTasks, tasks } = useContext(TasksContext);
   const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
 
+  const displayNextTasks = () => {
+    setNumSets(numSets + 1);
+  };
+
+  const generateSubTasks = (setIndex: number) => {
+    return [
+      {
+        localStorageKey: `input${setIndex}_1`,
+        placeholder: `Input ${setIndex} - 1`,
+        taskName: currentTask.name,
+      },
+      {
+        localStorageKey: `input${setIndex}_2`,
+        placeholder: `Input ${setIndex} - 2`,
+        taskName: currentTask.name,
+      },
+      {
+        localStorageKey: `input${setIndex}_3`,
+        placeholder: `Input ${setIndex} - 3`,
+        taskName: currentTask.name,
+      },
+      {
+        localStorageKey: `input${setIndex}_4`,
+        placeholder: `Input ${setIndex} - 4`,
+        taskName: currentTask.name,
+      },
+    ];
+  };
   const changeNameFormik = useFormik({
     initialValues: {
       newName: "",
@@ -50,13 +88,11 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
   };
 
   function handleExpandClick(): void {
-    // efefmeffefe
+    setIsSubTasksExpanded(!isSubTasksExpanded);
   }
 
   return (
-    <div
-      className={`task-footer absolute bottom-2 right-2 flex flex-col items-end mt-4`}
-    >
+    <div className={`task-footer flex flex-col items-end mt-2`}>
       {/* Ongoing Status */}
       {currentTask.ongoing ? (
         <span className="mb-2 text-xs text-gray-400 ">{cardLabel}</span>
@@ -66,7 +102,7 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
         <TaskIconWithTooltip
           src={expand_icon}
           onClick={handleExpandClick}
-          tooltipContent="Expand this task"
+          tooltipContent={isSubTasksExpanded ? "Hide subtasks" : "Add subtasks"}
         />
         <TaskIconWithTooltip
           src={settings_icon}
@@ -129,6 +165,46 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
             </div>
           }
         />
+      </div>
+
+      <div className="my-4 mb-8">
+        {isSubTasksExpanded && (
+          <div className="expanded-inputs flex gap-4 flex-col mx-2">
+            {[...Array(numSets)].map((_, setIndex) => {
+              return generateSubTasks(setIndex + 1).map((subTask, index) => (
+                <ExpandableInput
+                  key={`${setIndex}_${index}`}
+                  localStorageKey={subTask.localStorageKey}
+                  placeholder={subTask.placeholder}
+                  taskName={subTask.taskName}
+                />
+              ));
+            })}
+
+            <div className="relative group">
+              <button
+                className={`extra__plus_btn bg-slate-100 h-auto 
+              ${numSets >= 3 ? "cursor-not-allowed opacity-50" : ""}
+              `}
+                onClick={displayNextTasks}
+                disabled={numSets >= 3}
+              >
+                <span className="text-3xl text-slate-800">+</span>
+              </button>
+              <Tooltip
+                {...{ numSets }}
+                show={numSets >= 0}
+                content={
+                  numSets >= 3
+                    ? "You have reached the maximum number of allowed subtasks!"
+                    : numSets >= 0 && numSets <= 3
+                    ? "Click to add new subtasks"
+                    : ""
+                }
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

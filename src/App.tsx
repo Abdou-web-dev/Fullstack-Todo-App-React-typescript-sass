@@ -31,19 +31,19 @@ const App = () => {
 
   const filteredTasks: Task[] = useMemo(() => {
     return tasks.filter((task) => {
-      const normalizedQuery = searchQuery.toLowerCase();
-      const normalizedTaskName = task.name.toLowerCase();
+      const normalizedQuery = searchQuery?.toLowerCase();
+      const normalizedTaskName = task?.name?.toLowerCase();
 
       // Check if the task name contains the search query
-      if (normalizedTaskName.includes(normalizedQuery)) {
+      if (normalizedTaskName?.includes(normalizedQuery)) {
         return true;
       }
 
       // Check if any of the task's status flags match the search query
       if (
-        (task.ongoing && "ongoing".includes(normalizedQuery)) ||
-        (task.isValidated && "validated".includes(normalizedQuery)) ||
-        (task.isDone && "done".includes(normalizedQuery))
+        (task.ongoing && "ongoing"?.includes(normalizedQuery)) ||
+        (task.isValidated && "validated"?.includes(normalizedQuery)) ||
+        (task.isDone && "done"?.includes(normalizedQuery))
       ) {
         return true;
       }
@@ -57,25 +57,41 @@ const App = () => {
   // then if that fails again, it tries to load tasks.
   // If neither are found, it initializes tasks as an empty array.
   useEffect(() => {
-    // Check if there are updated tasks (single task)
+    // Check if there is an updated single task
     const updatedStoredTask = localStorage.getItem("updatedTask");
-    if (updatedStoredTask) {
-      setTasks(JSON.parse(updatedStoredTask));
-      console.log(
-        "Loaded updated task from localStorage:",
-        JSON.parse(updatedStoredTask)
-      );
-      return; // Exit early to prevent loading from the old "tasks" key
-    }
 
     // Check if there are updated tasks (multiple tasks)
     const updatedStoredTasks = localStorage.getItem("updatedTasksStatus");
+
+    if (updatedStoredTask && updatedStoredTasks) {
+      console.log(
+        "there are both tasks which name has been changed, and tasks which status has been changed in local storage"
+      );
+      // Merge and update tasks
+      const updatedTask = JSON.parse(updatedStoredTask);
+      const updatedTasksStatus = JSON.parse(updatedStoredTasks);
+
+      // Find the task in updatedTasksStatus and update its name
+      const mergedTasks = updatedTasksStatus.map((statusTask: Task) => {
+        if (statusTask.name === updatedTask.name) {
+          return { ...updatedTask, ...statusTask }; // Merge the updatedTask and statusTask
+        }
+        return statusTask;
+      });
+
+      setTasks(mergedTasks);
+      return; // Exit early to prevent loading from the old "tasks" key
+    }
+
+    if (updatedStoredTask) {
+      setTasks(JSON.parse(updatedStoredTask));
+
+      return; // Exit early to prevent loading from the old "tasks" key
+    }
+
     if (updatedStoredTasks) {
       setTasks(JSON.parse(updatedStoredTasks));
-      console.log(
-        "Loaded updated tasks from localStorage:",
-        JSON.parse(updatedStoredTasks)
-      );
+
       return; // Exit early to prevent loading from the old "tasks" key
     }
 
@@ -85,7 +101,6 @@ const App = () => {
     if (storedTasks) {
       // the fallback behavior when the 2 conditions above are both not met
       setTasks(JSON.parse(storedTasks));
-      console.log("Loaded tasks from localStorage:", JSON.parse(storedTasks));
     } else {
       setTasks([]);
       console.log("No tasks found in localStorage.");

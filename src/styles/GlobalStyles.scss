@@ -15,14 +15,13 @@
     outline: 0;
 
     &:focus {
-      // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-      // border-color: #007bff; /* Darker blue for focus */
       box-shadow: 0 0 0 2px #aedff7; /* Ripple effect */
       transition: border-color 0.7s ease-in-out;
     }
   }
 }
 .task-card-container {
+  // min-height: 1500px;
   .task-card-description {
     &::-webkit-scrollbar {
       width: 10px;
@@ -41,6 +40,21 @@
       border-radius: 10px;
       background: rgba(23, 22, 22, 0.44);
     }
+  }
+  &.card-height-subtasks__expanded {
+    min-height: 520px;
+  }
+  &.card-height-1 {
+    min-height: 520px;
+  }
+  &.card-height-2 {
+    min-height: 720px;
+  }
+  &.card-height-3 {
+    min-height: 920px;
+  }
+  &.card-height-4 {
+    min-height: 1120px;
   }
 }
 
@@ -84,6 +98,9 @@
   &.show_deleteTaskTool {
     width: 70px;
     background-color: rgba(23, 43, 108, 0.8);
+  }
+  &.showtooltip_less_than_four_groups_of_subtasks {
+    width: 120px;
   }
 }
 
@@ -138,5 +155,61 @@
         }
       }
     }
+  }
+}
+.expandable-input-container {
+  position: relative;
+}
+
+.expanded-input {
+  width: 100%;
+  padding-right: 30px;
+  outline: 0;
+  height: 2rem;
+  &:focus,
+  &:hover {
+    box-shadow: 0 0 0 2px #aedff745;
+    transition: border-color 0.7s ease-in-out;
+  }
+  &:focus {
+    box-shadow: 0 0 0 2px #7aa0b3;
+  }
+}
+
+.expandable-checkbox {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.expanded-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .extra__plus_btn {
+    outline: none;
+    background: none;
+    background: rgba(186, 191, 210, 0.075);
+    &:hover {
+      outline: none;
+      background: none;
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    }
+  }
+}
+
+.react-date-picker__inputGroup__input {
+  &.react-date-picker__inputGroup__day,
+  &.react-date-picker__inputGroup__month {
+    min-width: 35px;
+    text-align: center;
+  }
+  &.react-date-picker__inputGroup__year {
+    text-align: center;
+    min-width: 55px;
+  }
+  .react-date-picker__inputGroup__divider {
+    margin: 0 10px;
   }
 }

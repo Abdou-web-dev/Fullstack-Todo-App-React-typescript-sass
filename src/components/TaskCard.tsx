@@ -22,6 +22,9 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
   const [cardLabel, setCardLabel] = useState("ongoing...");
   const [importTaskTool, setImportTaskTool] = useState(false); //import stands from important
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubTasksExpanded, setIsSubTasksExpanded] = useState(false);
+  const [numSets, setNumSets] = useState(1);
+
   const { setTasks, tasks } = useContext(TasksContext);
 
   // Function to get the correct icon based on task type
@@ -68,11 +71,18 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
 
   return (
     <div
-      className={`task-card-container border p-4 pr-2 pt-2 rounded relative ${borderColor} ${borderWidth}
+      className={`task-card-container  border  p-4 pr-2 pt-2 rounded relative ${borderColor} ${borderWidth}
       ${!showDescription ? "h-64" : ""}
+      ${
+        isSubTasksExpanded
+          ? `card-height-subtasks__expanded card-height-${numSets}`
+          : ""
+      }
+      
       `}
       // set the height of the task card to 56 when the task description is not shown (hidden), to allow the card to stretch a bit its height
       style={{
+        minHeight: showDescription && isSubTasksExpanded ? "650px" : ``,
         backgroundColor: task.isDone //start with the most specific case
           ? "rgba(236, 253, 245, 1)"
           : task.isValidated
@@ -116,7 +126,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
       <div className="w-full max-w-48 mt-2">
         <h2
           className={`text-xl  font-semibold mb-2 ${
-            task.name.length > 16 ? "truncate" : ""
+            task?.name?.length > 16 ? "truncate" : ""
           }`}
         >
           {task.name}
@@ -126,7 +136,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
       {/* Description */}
       <div
         className={`task-card-description mb-4 ${
-          task.description.length > 240
+          task?.description?.length > 240
             ? "overflow-y-scroll"
             : "overflow-hidden"
         } overflow-hidden transition-all duration-1000 ease-in-out`}
@@ -165,7 +175,19 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
         {...{ task, setCardLabel }}
       />
 
-      <TaskFooter {...{ cardLabel, setIsOpen, task }}></TaskFooter>
+      <div className="">
+        <TaskFooter
+          {...{
+            cardLabel,
+            setIsOpen,
+            task,
+            isSubTasksExpanded,
+            setIsSubTasksExpanded,
+            numSets,
+            setNumSets,
+          }}
+        ></TaskFooter>
+      </div>
 
       <TaskModal
         modalContent={

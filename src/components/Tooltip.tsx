@@ -7,6 +7,7 @@ interface TooltipProps {
   task?: Task;
   showTooltip?: boolean;
   importTaskTool?: boolean;
+  numSets?: number | undefined;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -15,6 +16,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   task,
   showTooltip,
   importTaskTool,
+  numSets,
 }) => {
   let show_valid_tooltip = task?.ongoing && !task.isDone && !task.isValidated;
   let show_done_tooltip = task?.ongoing && !task?.isDone && task?.isValidated;
@@ -24,12 +26,15 @@ const Tooltip: React.FC<TooltipProps> = ({
   return (
     <div
       className={`rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out
-      tooltip absolute bottom-full left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1
-       ${show_done_tooltip ? "show_done_tooltip" : ""}
-      ${show_valid_tooltip ? "show_valid_tooltip" : ""}
-      ${show === importTaskTool ? "show_importTaskTool" : ""}
-      ${show === showTooltip ? "show_deleteTaskTool" : ""}
-
+    tooltip absolute bottom-full left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1
+    ${show_done_tooltip ? "show_done_tooltip" : ""}
+    ${show_valid_tooltip ? "show_valid_tooltip" : ""}
+    ${show === importTaskTool ? "show_importTaskTool" : ""}
+    ${show === showTooltip ? "show_deleteTaskTool" : ""}
+    ${
+      //@ts-ignore
+      numSets < 3 ? "showtooltip_less_than_four_groups_of_subtasks" : ""
+    }
       `}
     >
       <span>{content}</span>
