@@ -45,6 +45,11 @@ const StatusCheckBoxesGroup: FunctionComponent<StatusCheckBoxesGroupProps> = ({
     });
     // Update the state with the updatedTasks
     setTasks(updatedTasks || []);
+    // Save updated tasks to localStorage
+    localStorage.setItem(
+      "updatedTasksStatus",
+      JSON.stringify(updatedTasks || [])
+    );
     return newStatus;
   };
 

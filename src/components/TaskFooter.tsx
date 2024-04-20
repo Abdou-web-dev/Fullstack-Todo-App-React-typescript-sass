@@ -1,9 +1,8 @@
+import { useFormik } from "formik";
 import { FunctionComponent, useContext, useState } from "react";
 import expand_icon from "../assets/img/add.svg";
 import delete_icon from "../assets/img/delete.svg";
 import settings_icon from "../assets/img/modify.svg";
-
-import { useFormik } from "formik";
 import { TasksContext } from "../context/ItemsContext";
 import { Task } from "../types/taskType";
 import { TaskSchema } from "../utils/validationSchema";
@@ -23,7 +22,6 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
 }) => {
   const { setTasks, tasks } = useContext(TasksContext);
   const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
-  // const [newName, setNewName] = useState("");
 
   const changeNameFormik = useFormik({
     initialValues: {
@@ -38,14 +36,17 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
 
   // Function to modify a task's title by its name
   const changeTaskName = (taskName: string, newTaskName: string) => {
-    setTasks(
-      tasks?.map((task) => {
-        if (task.name === taskName) {
-          return { ...task, name: newTaskName };
-        }
-        return task;
-      })
-    );
+    const updatedTask = tasks?.map((task) => {
+      if (task.name === taskName) {
+        return { ...task, name: newTaskName };
+      }
+      return task;
+    });
+    console.log("updatedTask", updatedTask);
+    setTasks(updatedTask);
+
+    // Save updated tasks to localStorage
+    localStorage.setItem("updatedTask", JSON.stringify(updatedTask));
   };
 
   function handleExpandClick(): void {
@@ -54,10 +55,7 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
 
   return (
     <div
-      className={`absolute bottom-2 right-2 flex flex-col items-end mt-4`}
-
-      // changeNameFormik.errors.newName
-      // changeNameFormik.touched.newName
+      className={`task-footer absolute bottom-2 right-2 flex flex-col items-end mt-4`}
     >
       {/* Ongoing Status */}
       {currentTask.ongoing ? (
@@ -87,7 +85,7 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
           onClose={() => setIsChangeModalOpen(false)}
           // onSave={changeTaskName}
           modalContent={
-            <div>
+            <div className="task-footer__modal">
               <h2 className="text-xl font-semibold mb-4">Change Task Name</h2>
               <input
                 name="newName"
@@ -95,7 +93,7 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
                 value={changeNameFormik.values.newName}
                 onChange={changeNameFormik.handleChange}
                 onBlur={changeNameFormik.handleBlur}
-                className="border rounded px-2 py-1 w-full mb-4"
+                className="change_name__input border rounded px-2 py-1 w-full mb-4 "
                 placeholder="New Task Name"
               />
               {changeNameFormik.touched.newName &&
@@ -107,7 +105,7 @@ const TaskFooter: FunctionComponent<TaskFooterProps> = ({
                 </div>
               ) : null}
               <div
-                className={`  flex justify-center items-center mt-6${
+                className={`flex justify-center items-center mt-6${
                   changeNameFormik.errors.newName &&
                   changeNameFormik.touched.newName
                     ? ""
