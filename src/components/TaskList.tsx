@@ -5,15 +5,12 @@ import { TaskCard } from "./TaskCard";
 
 interface TaskListProps {
   tasks: Task[];
-  onUpdateStatus: (
-    status: "isValidated" | "isDone" | "ongoing" | undefined,
-    taskName: string
-  ) => void;
+  // deleteTask: (taskName: string) => void;
 }
 
 export const TaskList: FunctionComponent<TaskListProps> = ({
   tasks,
-  onUpdateStatus,
+  // deleteTask,
 }) => {
   return (
     <div className="container mx-auto p-4">
@@ -24,7 +21,7 @@ export const TaskList: FunctionComponent<TaskListProps> = ({
             <TaskCard
               key={task.name + task.createdAt.toString()}
               task={task}
-              onUpdateStatus={onUpdateStatus}
+              // {...{ deleteTask }}
             ></TaskCard>
           ))
         ) : (

@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Sedan:ital@0;1&display=swap");
 
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .task-card-container {
   .task-card-description {
     &::-webkit-scrollbar {
@@ -54,8 +59,53 @@
     width: 180px;
     background-color: grey;
   }
+  &.show_deleteTaskTool {
+    width: 70px;
+    background-color: rgba(23, 43, 108, 0.8);
+  }
 }
 
 .relative:hover .tooltip {
   visibility: visible;
+}
+
+.ReactModal__Overlay {
+  &.ReactModal__Overlay--after-open {
+    .ReactModal__Content {
+      // margin-top: 3% !important;
+      @include flex-center();
+      flex-direction: column;
+      gap: 1rem;
+
+      .modal-btns {
+        @include flex-center();
+        flex-direction: row;
+        gap: 1rem;
+        button {
+          padding: 0.2rem 1rem;
+          outline: none;
+          border: none;
+          span {
+            color: white;
+            font-family: "Sedan", serif;
+            font-weight: bold;
+          }
+        }
+        button.modal-btn-yes {
+          background-color: #0084a89b;
+          // transition: 0.6s ease;
+          &:hover {
+            background-color: #0084a8c3;
+          }
+        }
+        button.modal-btn-no {
+          // transition: 0.6s ease;
+          background-color: rgba(44, 41, 41, 0.2);
+          &:hover {
+            background-color: rgba(44, 41, 41, 0.266);
+          }
+        }
+      }
+    }
+  }
 }

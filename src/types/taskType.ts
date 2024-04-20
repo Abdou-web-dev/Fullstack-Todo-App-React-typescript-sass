@@ -8,13 +8,3 @@ export interface Task {
   isValidated: boolean;
   ongoing: boolean;
 }
-// status: "ongoing" | "validated" | "done";
-
-//   onSubmit({
-//     name: "aa",
-//     description: "lejfljef",
-//     createdAt: new Date(),
-//     isDone: false,
-//     isValidated: true,
-//   });
-// }, []);

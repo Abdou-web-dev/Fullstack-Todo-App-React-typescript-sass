@@ -5,26 +5,23 @@ import important_icon from "../assets/img/warning_9392681.png";
 import "../styles/GlobalStyles.scss";
 import { Task } from "../types/taskType";
 import { formatDate } from "../utils/taskUtils";
+import TaskFooter from "./TaskFooter";
 import Tooltip from "./Tooltip";
+import StatusCheckBoxesGroup from "./checkboxes/StatusCheckBoxesGroup";
+import TaskModal from "./modals/TaskModal";
 
 interface TaskCardProps {
   task: Task;
-  onUpdateStatus: (
-    status: "isValidated" | "isDone" | "ongoing" | undefined,
-    taskName: string
-  ) => void;
 }
 
-export const TaskCard: FunctionComponent<TaskCardProps> = ({
-  task,
-  onUpdateStatus: updateTaskStatus,
-}) => {
+export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
   const [showDescription, setShowDescription] = useState(false);
   const [borderColor, setBorderColor] = useState<string>(""); // Default reddish border for ongoing tasks
   const [borderWidth, setBorderWidth] = useState<string>(""); // Default border width
   const [cardLabel, setCardLabel] = useState("ongoing...");
-  const [unvalidateTooltip, setUnvalidateTooltip] = useState(false);
-  const [importTaskTool, setImportTaskTool] = useState(false);
+  const [importTaskTool, setImportTaskTool] = useState(false); //import stands from important
+  const [isOpen, setIsOpen] = useState(false);
+
   // Function to get the correct icon based on task type
   const getIcon = () => {
     switch (task.type) {
@@ -57,15 +54,14 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
     if (!task.isValidated && !task.isDone) setCardLabel("ongoing...");
   }, [task.isValidated, task.isDone]);
 
-  let show_valid_tooltip = task.ongoing && !task.isDone && !task.isValidated;
-  let show_done_tooltip = task.ongoing && !task.isDone && task.isValidated;
-
   return (
     <div
-      className={`task-card-container  border p-4 rounded relative ${borderColor} ${borderWidth}
+      className={`task-card-container border p-4 pr-2 pt-2 rounded relative ${borderColor} ${borderWidth}
+      ${!showDescription ? "h-64" : ""}
       `}
+      // set the height of the task card to 56 when the task description is not shown (hidden), to allow the card to stretch a bit its height
       style={{
-        backgroundColor: task.isDone
+        backgroundColor: task.isDone //start with the most specific case
           ? "rgba(236, 253, 245, 1)"
           : task.isValidated
           ? "rgba(236, 253, 245, 0.25)"
@@ -74,6 +70,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
           : "transparent",
       }}
     >
+      {/* task type icon */}
       {getIcon() && (
         <div className="relative group">
           <img
@@ -102,14 +99,17 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
           />
         </div>
       )}
-      <h2 className="text-xl font-semibold mb-2">{task.name}</h2>
 
-      {/* Ongoing Status */}
-      {task.ongoing ? (
-        <span className="absolute bottom-2 right-2 text-xs text-gray-400">
-          {cardLabel}
-        </span>
-      ) : null}
+      {/* task name */}
+      <div className="w-full max-w-48 mt-2">
+        <h2
+          className={`text-xl  font-semibold mb-2 ${
+            task.name.length > 16 ? "truncate" : ""
+          }`}
+        >
+          {task.name}
+        </h2>
+      </div>
 
       {/* Description */}
       <div
@@ -135,77 +135,22 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({
       >
         {showDescription ? "Show less" : "Show more"}
       </button>
-      <div>{formatDate(task.createdAt, task.createdAtTime)}</div>
 
-      {/* Status Checkboxes */}
-      <div className=" flex items-center mt-4">
-        {/* Validated Checkbox */}
-        <div className="relative group">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={task.isValidated}
-              onChange={() => {
-                // Prevent unchecking the checkbox if isDone is true
-                // With this implementation, the isValidated checkbox cannot be unchecked unless the isDone checkbox is unchecked first.
-                if (task.isDone) {
-                  setUnvalidateTooltip(true);
-                  setTimeout(() => {
-                    setUnvalidateTooltip(false);
-                  }, 2000); // Hide the tooltip after 2 seconds
-                  return;
-                }
-                updateTaskStatus("isValidated", task.name);
-                setCardLabel("");
-              }}
-              className="form-checkbox text-blue-500 "
-            />
-
-            <Tooltip
-              {...{ task }}
-              show={show_valid_tooltip}
-              content="Validate this task"
-            />
-            <Tooltip
-              {...{ task }}
-              show={unvalidateTooltip}
-              content="You can not unvalidate a task marked as done !"
-            />
-
-            <span className="text-gray-600">
-              {task.isValidated ? "validated" : ""}
-            </span>
-          </label>
-        </div>
-
-        {/* Done Checkbox */}
-        <div className="relative group  done_tooltip">
-          <label className="flex items-center ml-4 space-x-2">
-            <input
-              className={`form-checkbox text-green-500 ${
-                !task.isValidated || !task.ongoing
-                  ? "bg-gray-300 cursor-not-allowed opacity-50"
-                  : ""
-              }`}
-              type="checkbox"
-              checked={task.isDone}
-              onChange={() => {
-                if (task.isValidated && task.ongoing) {
-                  updateTaskStatus("isDone", task.name);
-                  setCardLabel("");
-                }
-              }}
-            />
-
-            <Tooltip
-              {...{ task }}
-              show={show_done_tooltip}
-              content="Mark this task as done"
-            ></Tooltip>
-            <span className="text-gray-600">{task.isDone ? "done" : ""}</span>
-          </label>
-        </div>
+      <div>
+        <span
+          className={`text-slate-700 text-lg font-semibold sedan-regular   ${
+            showDescription ? "text-sm" : ""
+          }`}
+        >
+          {formatDate(task.createdAt, task.createdAtTime)}
+        </span>
       </div>
+
+      <StatusCheckBoxesGroup {...{ task, setCardLabel }} />
+
+      <TaskFooter {...{ cardLabel, setIsOpen, task }}></TaskFooter>
+
+      <TaskModal {...{ task, isOpen, setIsOpen }}></TaskModal>
     </div>
   );
 };

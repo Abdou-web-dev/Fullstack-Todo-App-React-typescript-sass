@@ -5,6 +5,7 @@ interface TooltipProps {
   show: boolean;
   content: string;
   task?: Task;
+  showTooltip?: boolean;
   importTaskTool?: boolean;
 }
 
@@ -12,6 +13,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   show,
   content,
   task,
+  showTooltip,
   importTaskTool,
 }) => {
   let show_valid_tooltip = task?.ongoing && !task.isDone && !task.isValidated;
@@ -26,7 +28,8 @@ const Tooltip: React.FC<TooltipProps> = ({
        ${show_done_tooltip ? "show_done_tooltip" : ""}
       ${show_valid_tooltip ? "show_valid_tooltip" : ""}
       ${show === importTaskTool ? "show_importTaskTool" : ""}
-      
+      ${show === showTooltip ? "show_deleteTaskTool" : ""}
+
       `}
     >
       <span>{content}</span>
