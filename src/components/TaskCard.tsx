@@ -1,7 +1,8 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import pro_icon from "../assets/img/briefcase_4620990.png";
 import perso_icon from "../assets/img/personal-security_12110372.png";
 import important_icon from "../assets/img/warning_9392681.png";
+import { TasksContext } from "../context/ItemsContext";
 import "../styles/GlobalStyles.scss";
 import { Task } from "../types/taskType";
 import { formatDate } from "../utils/taskUtils";
@@ -21,6 +22,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
   const [cardLabel, setCardLabel] = useState("ongoing...");
   const [importTaskTool, setImportTaskTool] = useState(false); //import stands from important
   const [isOpen, setIsOpen] = useState(false);
+  const { setTasks, tasks } = useContext(TasksContext);
 
   // Function to get the correct icon based on task type
   const getIcon = () => {
@@ -53,6 +55,16 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
   useEffect(() => {
     if (!task.isValidated && !task.isDone) setCardLabel("ongoing...");
   }, [task.isValidated, task.isDone]);
+
+  // Function to delete a task by its name
+  const deleteTask = (taskName: string) => {
+    setTasks(tasks?.filter((task) => task.name !== taskName));
+  };
+
+  function confirmDeteleTask(): void {
+    deleteTask(task.name);
+    setIsOpen(false);
+  }
 
   return (
     <div
@@ -146,11 +158,40 @@ export const TaskCard: FunctionComponent<TaskCardProps> = ({ task }) => {
         </span>
       </div>
 
-      <StatusCheckBoxesGroup {...{ task, setCardLabel }} />
+      <StatusCheckBoxesGroup
+        applyBottomMargin={
+          showDescription && task.isDone && task.isValidated ? true : false
+        }
+        {...{ task, setCardLabel }}
+      />
 
       <TaskFooter {...{ cardLabel, setIsOpen, task }}></TaskFooter>
 
-      <TaskModal {...{ task, isOpen, setIsOpen }}></TaskModal>
+      <TaskModal
+        modalContent={
+          <>
+            <h3 className="text-gray-600 sedan-regular text-xl">
+              Are you sure you want to delete this task ?
+            </h3>
+            <div className="modal-btns">
+              <button
+                className={`modal-btn-yes `}
+                onClick={() => confirmDeteleTask()}
+              >
+                <span>YES</span>
+              </button>
+              <button
+                className={`modal-btn-no `}
+                onClick={() => setIsOpen(false)}
+              >
+                <span>NO</span>
+              </button>
+            </div>
+          </>
+        }
+        onClose={() => setIsOpen(false)}
+        {...{ isOpen }}
+      ></TaskModal>
     </div>
   );
 };

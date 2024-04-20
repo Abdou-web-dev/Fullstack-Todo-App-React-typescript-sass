@@ -1,44 +1,30 @@
-import { FunctionComponent, useContext, useEffect } from "react";
+import { FunctionComponent, useEffect } from "react";
 import Modal from "react-modal";
-import { TasksContext } from "../../context/ItemsContext";
-import { Task } from "../../types/taskType";
 
 interface TaskModalProps {
-  task: Task;
-  // deleteTask: (taskName: string) => void;
+  modalContent: React.ReactNode;
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
 const TaskModal: FunctionComponent<TaskModalProps> = ({
-  task,
-  // deleteTask,
+  modalContent,
   isOpen,
-  setIsOpen,
+  onClose,
 }) => {
-  const { setTasks, tasks } = useContext(TasksContext);
-
-  // Function to delete a task by its name
-  const deleteTask = (taskName: string) => {
-    setTasks(tasks?.filter((task) => task.name !== taskName));
-  };
-
-  function confirmDeteleTask(): void {
-    deleteTask(task.name);
-    setIsOpen(false);
-  }
-
   useEffect(() => {
     // Set the app element for react-modal
     Modal.setAppElement("#root");
-    //this useEffect solves this issue : react-modal: App element is not defined. Please use `Modal.setAppElement(el)` or set `appElement={el}`. This is needed so screen readers don't see main content when modal is opened.
+    // This useEffect solves this issue: react-modal: App element is not defined.
+    // Please use `Modal.setAppElement(el)` or set `appElement={el}`.
+    // This is needed so screen readers don't see main content when modal is opened.
   }, []);
 
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={() => setIsOpen(false)}
-      contentLabel="Delete Prompt Modal"
+      onRequestClose={onClose}
+      contentLabel="Modal"
       style={{
         content: {
           width: "30%",
@@ -49,20 +35,7 @@ const TaskModal: FunctionComponent<TaskModalProps> = ({
         },
       }}
     >
-      <h3 className="text-gray-600 sedan-regular text-xl">
-        Are you sure you want to delete this task ?
-      </h3>
-      <div className="modal-btns">
-        <button
-          className={`modal-btn-yes `}
-          onClick={() => confirmDeteleTask()}
-        >
-          <span>YES</span>
-        </button>
-        <button className={`modal-btn-no `} onClick={() => setIsOpen(false)}>
-          <span>NO</span>
-        </button>
-      </div>
+      {modalContent}
     </Modal>
   );
 };

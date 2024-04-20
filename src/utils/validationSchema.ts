@@ -7,3 +7,9 @@ export const validationSchema = Yup.object({
   createdAt: Yup.date().nullable().required("Date est requise"),
   createdAtTime: Yup.string().required("Time is required"),
 });
+
+export const TaskSchema = Yup.object().shape({
+  newName: Yup.string()
+    .required("New Task Name is required")
+    .matches(/^[a-zA-Z0-9\s]+$/, "Invalid characters detected"),
+});

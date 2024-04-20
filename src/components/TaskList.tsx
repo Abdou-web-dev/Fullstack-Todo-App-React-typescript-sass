@@ -5,13 +5,9 @@ import { TaskCard } from "./TaskCard";
 
 interface TaskListProps {
   tasks: Task[];
-  // deleteTask: (taskName: string) => void;
 }
 
-export const TaskList: FunctionComponent<TaskListProps> = ({
-  tasks,
-  // deleteTask,
-}) => {
+export const TaskList: FunctionComponent<TaskListProps> = ({ tasks }) => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Tasks</h1>
@@ -21,7 +17,6 @@ export const TaskList: FunctionComponent<TaskListProps> = ({
             <TaskCard
               key={task.name + task.createdAt.toString()}
               task={task}
-              // {...{ deleteTask }}
             ></TaskCard>
           ))
         ) : (

@@ -6,11 +6,13 @@ import Tooltip from "../Tooltip";
 interface StatusCheckBoxesGroupProps {
   task: Task;
   setCardLabel: React.Dispatch<React.SetStateAction<string>>;
+  applyBottomMargin: boolean;
 }
 
 const StatusCheckBoxesGroup: FunctionComponent<StatusCheckBoxesGroupProps> = ({
   task,
   setCardLabel,
+  applyBottomMargin,
 }) => {
   let show_valid_tooltip = task.ongoing && !task.isDone && !task.isValidated;
   let show_done_tooltip = task.ongoing && !task.isDone && task.isValidated;
@@ -47,7 +49,9 @@ const StatusCheckBoxesGroup: FunctionComponent<StatusCheckBoxesGroupProps> = ({
   };
 
   return (
-    <div className=" flex items-center mt-4">
+    <div
+      className={` flex items-center mt-4 ${applyBottomMargin ? "mb-8" : ""}`}
+    >
       {/* Status Checkboxes */}
       {/* Validated Checkbox */}
       <div className="relative group">
