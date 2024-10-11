@@ -10,18 +10,19 @@ Getting Started
 Follow the steps below to run the Todo app locally:
 
 1. Clone the Repository
+2. 
 
-   # git clone [https://github.com/Abdou-web-dev/todo-app-test-sobr-git.git](https://github.com/Abdou-web-dev/Fullstack-Todo-App-React-typescript-sass.git)
+   # git clone https://github.com/Abdou-web-dev/Fullstack-Todo-App-React-typescript-sass.git
 
-2. Navigate to the Project Directory
+3. Navigate to the Project Directory
 
    # cd todo-app-test-sobr-git
 
-3. Install Dependencies
+4. Install Dependencies
 
    # npm install
 
-4. Start the Development Server
+5. Start the Development Server
 
    # npm run dev
 
